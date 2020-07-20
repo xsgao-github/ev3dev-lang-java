@@ -53,6 +53,7 @@ public class Sysfs implements ConditionalCompilation {
         	}
         	raf.seek(0);
 			raf.write(value.getBytes());
+			raf.setLength(value.length());
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
             return false;
@@ -78,7 +79,7 @@ public class Sysfs implements ConditionalCompilation {
         	RandomAccessFile raf = readers.get(filePath);
         	if (raf == null) {
         		raf = new RandomAccessFile(filePath, "r");
-        		writers.put(filePath, raf);
+        		readers.put(filePath, raf);
         	}
         	raf.seek(0);
         	byte[] b = new byte[64];
