@@ -1,12 +1,13 @@
 package ev3dev.hardware;
 
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public class EV3DevDistros {
+public class EV3DevDistros implements ConditionalCompilation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EV3DevDistros.class);
 
@@ -36,7 +37,9 @@ public class EV3DevDistros {
 
     private EV3DevDistros() {
 
-        LOGGER.debug("Providing an EV3DevDistros instance");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Providing an EV3DevDistros instance");
+    	}
 
         final String osResult = Shell.execute(DEBIAN_DISTRO_DETECTION_QUERY);
         if (osResult.contains(DEBIAN_DISTRO_DETECTION_JESSIE)) {
@@ -51,12 +54,16 @@ public class EV3DevDistros {
     }
 
     private void setStretch() {
-        LOGGER.debug("Debian Stretch detected");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Debian Stretch detected");
+    	}
         CURRENT_DISTRO = EV3DevDistro.STRETCH;
     }
 
     private void setJessie() {
-        LOGGER.debug("Debian Jessie detected");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Debian Jessie detected");
+    	}
         CURRENT_DISTRO = EV3DevDistro.JESSIE;
     }
 

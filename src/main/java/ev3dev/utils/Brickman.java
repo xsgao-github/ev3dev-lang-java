@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 @Slf4j
-public class Brickman {
+public class Brickman implements ConditionalCompilation {
 
     private static final String DISABLE_BRICKMAN_COMMAND = "sudo systemctl stop brickman";
     private static final String ENABLE_BRICKMAN_COMMAND = "sudo systemctl start brickman";
@@ -17,7 +17,9 @@ public class Brickman {
      * Disable Brickman.
      */
     public static void disable() {
-        LOGGER.trace("Disabling Brickman service");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Disabling Brickman service");
+    	}
 
         Shell.execute(DISABLE_BRICKMAN_COMMAND);
 
@@ -28,7 +30,9 @@ public class Brickman {
      * Enable Brickman.
      */
     private static void restoreBrickman() {
-        LOGGER.trace("Enabling Brickman service");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Enabling Brickman service");
+    	}
 
         Shell.execute(ENABLE_BRICKMAN_COMMAND);
     }
@@ -38,7 +42,9 @@ public class Brickman {
      * @param gfx Required context to draw an image.
      */
     public static void drawJavaLogo(Graphics2D gfx) {
-        LOGGER.debug("Showing Java logo on EV3 Brick");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Showing Java logo on EV3 Brick");
+    	}
 
         try {
             Rectangle bounds = gfx.getClipBounds();

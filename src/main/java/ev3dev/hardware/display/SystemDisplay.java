@@ -1,6 +1,8 @@
 package ev3dev.hardware.display;
 
 import com.sun.jna.LastErrorException;
+
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.io.ILibc;
 import ev3dev.utils.io.NativeConstants;
 import ev3dev.utils.io.NativeLibc;
@@ -13,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2.4.7
  */
 @Slf4j
-public final class SystemDisplay {
+public final class SystemDisplay implements ConditionalCompilation {
 
     private SystemDisplay() {
     }
@@ -29,14 +31,18 @@ public final class SystemDisplay {
     public static DisplayInterface initializeRealDisplay() {
         ILibc libc = new NativeLibc();
 
-        LOGGER.debug("initializing new real display");
+        if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("initializing new real display");
+        }
         try {
             return new OwnedDisplay(libc);
         } catch (LastErrorException e) {
             int errno = e.getErrorCode();
             if (errno == NativeConstants.ENOTTY || errno == NativeConstants.ENXIO) {
-                LOGGER.debug("real display init failed, "
-                    + "but it was caused by not having a real TTY, using fake console");
+            	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            		LOGGER.debug("real display init failed, "
+            				+ "but it was caused by not having a real TTY, using fake console");
+            	}
                 // we do not run from Brickman
                 return new StolenDisplay(libc);
             } else {

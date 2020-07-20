@@ -1,6 +1,7 @@
 package fake_ev3dev.ev3dev.sensors;
 
 import ev3dev.hardware.EV3DevPlatform;
+import ev3dev.utils.ConditionalCompilation;
 import fake_ev3dev.BaseElement;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
-public class FakeBattery extends BaseElement {
+public class FakeBattery extends BaseElement implements ConditionalCompilation {
 
     private static final String BATTERY_PATH = "power_supply";
     private static final String BATTERY_EV3_SUBPATH = "lego-ev3-battery";
@@ -26,7 +27,9 @@ public class FakeBattery extends BaseElement {
 
     public FakeBattery(final EV3DevPlatform ev3DevPlatform) throws IOException {
 
-        LOGGER.info("Adding a Battery device in the FileSystem for: {}", ev3DevPlatform);
+    	if (DC_INFO && LOGGER.isInfoEnabled()) {
+    		LOGGER.info("Adding a Battery device in the FileSystem for: {}", ev3DevPlatform);
+    	}
 
         if(ev3DevPlatform.equals(EV3DevPlatform.EV3BRICK)) {
             batterySubpath = BATTERY_EV3_SUBPATH;

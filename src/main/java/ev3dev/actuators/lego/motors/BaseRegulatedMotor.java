@@ -3,6 +3,7 @@ package ev3dev.actuators.lego.motors;
 import ev3dev.hardware.EV3DevMotorDevice;
 import ev3dev.hardware.EV3DevPlatforms;
 import ev3dev.sensors.Battery;
+import ev3dev.utils.ConditionalCompilation;
 import lejos.hardware.port.Port;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
@@ -43,7 +44,7 @@ import java.util.List;
  * @author Andy Shaw
  * @author Juan Antonio Breña Moral
  */
-public abstract class BaseRegulatedMotor extends EV3DevMotorDevice implements RegulatedMotor {
+public abstract class BaseRegulatedMotor extends EV3DevMotorDevice implements RegulatedMotor, ConditionalCompilation {
 
     private static final Logger log = LoggerFactory.getLogger(BaseRegulatedMotor.class);
 
@@ -76,7 +77,7 @@ public abstract class BaseRegulatedMotor extends EV3DevMotorDevice implements Re
         List<RegulatedMotorListener> list = new ArrayList<>();
         listenerList = Collections.synchronizedList(list);
 
-        if (log.isInfoEnabled()) {
+        if (DC_INFO && log.isInfoEnabled()) {
             log.info("Configuring motor connected on Port: {}", motorPort.getName());
         }
 
@@ -84,11 +85,11 @@ public abstract class BaseRegulatedMotor extends EV3DevMotorDevice implements Re
         final EV3DevPlatforms ev3DevPlatforms = EV3DevPlatforms.getInstance();
         final String port = ev3DevPlatforms.getMotorPort(motorPort);
 
-        if (log.isDebugEnabled()) {
+        if (DC_DEBUG && log.isDebugEnabled()) {
             log.debug("Detecting motor on port: {}", port);
         }
         this.detect(LEGO_PORT, port);
-        if (log.isDebugEnabled()) {
+        if (DC_DEBUG && log.isDebugEnabled()) {
             log.debug("Setting port in mode: {}", TACHO_MOTOR);
         }
         this.setStringAttribute(MODE, TACHO_MOTOR);
@@ -97,7 +98,7 @@ public abstract class BaseRegulatedMotor extends EV3DevMotorDevice implements Re
         //TODO Review to implement asynchronous solution
         Delay.msDelay(1000);
         this.setStringAttribute(COMMAND, RESET);
-        if (log.isDebugEnabled()) {
+        if (DC_DEBUG && log.isDebugEnabled()) {
             log.debug("Motor ready to use on Port: {}", motorPort.getName());
         }
     }
@@ -196,7 +197,7 @@ public abstract class BaseRegulatedMotor extends EV3DevMotorDevice implements Re
 
     /**
      * Causes the motor to actively try to hold the current position.
-     * If an external force tries to turn the motor, the motor will “push back” to maintain its position.
+     * If an external force tries to turn the motor, the motor will push back to maintain its position.
      */
     @Override
     public void hold() {

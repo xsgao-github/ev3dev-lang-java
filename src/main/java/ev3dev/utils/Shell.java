@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
  * @author Juan Antonio Breña Moral
  */
 @Slf4j
-public class Shell {
+public class Shell implements ConditionalCompilation {
 
     public static String COMMAND_ERROR_MESSAGE = "COMMAND_ERROR";
 
@@ -24,7 +24,9 @@ public class Shell {
      */
     public static String execute(final String command) {
 
-        LOGGER.debug("Command: {}", command);
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Command: {}", command);
+    	}
         StringBuilder output = new StringBuilder();
 
         Process p;
@@ -56,7 +58,9 @@ public class Shell {
     public static String execute(final String[] command) {
 
         for (String cmd : command) {
-            LOGGER.info("Command chunk: {}", cmd);
+        	if (DC_INFO && LOGGER.isInfoEnabled()) {
+        		LOGGER.info("Command chunk: {}", cmd);
+        	}
         }
         StringBuilder output = new StringBuilder();
 

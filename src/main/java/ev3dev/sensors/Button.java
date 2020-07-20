@@ -3,6 +3,8 @@ package ev3dev.sensors;
 import lejos.hardware.Key;
 import org.slf4j.Logger;
 
+import ev3dev.utils.ConditionalCompilation;
+
 /**
  * Abstraction for an NXT/EV3 button. Example:
  *
@@ -26,7 +28,7 @@ import org.slf4j.Logger;
  * that you write your own Thread, which waits for button events and dispatches
  * the events to anyone who's interested.
  */
-public class Button {
+public class Button implements ConditionalCompilation {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Button.class);
 
@@ -68,7 +70,9 @@ public class Button {
      * @return the bitmask
      */
     public static int waitForAnyEvent() {
-        log.debug("Not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Not implemented");
+    	}
         return 0;//keys.waitForAnyEvent();
     }
 

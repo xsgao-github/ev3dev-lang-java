@@ -2,6 +2,7 @@ package ev3dev.actuators.ev3;
 
 import ev3dev.hardware.EV3DevDevice;
 import ev3dev.hardware.EV3DevPlatform;
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Sysfs;
 import lejos.hardware.LED;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p><i>Only EV3Bricks are supported.</i>
  */
-public class EV3Led extends EV3DevDevice implements LED {
+public class EV3Led extends EV3DevDevice implements LED, ConditionalCompilation {
 
     /**
      * Directions of the LED.
@@ -123,7 +124,9 @@ public class EV3Led extends EV3DevDevice implements LED {
             Sysfs.writeInteger(LED_RED, 255);
             Sysfs.writeInteger(LED_GREEN, 255);
         } else if (pattern > 3) {
-            log.debug("This feature is not implemented");
+        	if (DC_DEBUG && log.isDebugEnabled()) {
+        		log.debug("This feature is not implemented");
+        	}
         }
     }
 

@@ -1,10 +1,9 @@
 package ev3dev.utils;
 
-import org.slf4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,17 +11,23 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
 
 /**
  * The class responsible to interact with Sysfs on EV3Dev
  *
  * @author Juan Antonio Breña Moral
  */
-public class Sysfs {
+public class Sysfs implements ConditionalCompilation {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Sysfs.class);
-
+    
+    private static final Map<String, RandomAccessFile> rafMap = new HashMap<>();
+    
     /**
      * Write a value in a file.
      *
@@ -31,7 +36,7 @@ public class Sysfs {
      * @return A boolean value if the operation was written or not.
      */
     public static boolean writeString(final String filePath, final String value) {
-        if (log.isTraceEnabled()) {
+        if (DC_TRACE && log.isTraceEnabled()) {
             log.trace("echo " + value + " > " + filePath);
         }
         try {
@@ -65,14 +70,14 @@ public class Sysfs {
      * @return value from attribute
      */
     public static String readString(final String filePath) {
-        if (log.isTraceEnabled()) {
+    	if (DC_TRACE && log.isTraceEnabled()) {
             log.trace("cat " + filePath);
         }
         try {
             final Path path = Paths.get(filePath);
             if (existFile(path) && Files.isReadable(path)) {
                 final String result = Files.readAllLines(path, Charset.forName("UTF-8")).get(0);
-                if (log.isTraceEnabled()) {
+                if (DC_TRACE && log.isTraceEnabled()) {
                     log.trace("value: {}", result);
                 }
                 return result;
@@ -118,7 +123,7 @@ public class Sysfs {
      * @return boolean
      */
     public static boolean existPath(final String filePath) {
-        if (log.isTraceEnabled()) {
+    	if (DC_TRACE && log.isTraceEnabled()) {
             log.trace("ls " + filePath);
         }
         final File f = new File(filePath);

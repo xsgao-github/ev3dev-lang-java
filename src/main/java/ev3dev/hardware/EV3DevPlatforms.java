@@ -1,5 +1,6 @@
 package ev3dev.hardware;
 
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Sysfs;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
@@ -13,7 +14,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 @Slf4j
-public class EV3DevPlatforms {
+public class EV3DevPlatforms implements ConditionalCompilation {
 
     private static EV3DevPlatforms instance;
 
@@ -36,7 +37,9 @@ public class EV3DevPlatforms {
 
     private EV3DevPlatforms() {
 
-        LOGGER.debug("Providing a EV3DevPlatforms instance");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Providing a EV3DevPlatforms instance");
+    	}
 
         // load properties from jar
         final EV3DevPropertyLoader ev3DevPropertyLoader = new EV3DevPropertyLoader();
@@ -57,7 +60,7 @@ public class EV3DevPlatforms {
         }
 
         // handle success
-        if (LOGGER.isTraceEnabled()) {
+        if (DC_TRACE && LOGGER.isTraceEnabled()) {
             LOGGER.trace("Detected platform: " + platform);
         }
         propPrefix = platform.getPropertyNamespace();
@@ -66,7 +69,9 @@ public class EV3DevPlatforms {
 
     private boolean batteryTest(final String batteryDir, final String propPrefix) {
 
-        LOGGER.debug("Detecting platform with the battery approach");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Detecting platform with the battery approach");
+    	}
         Path path = Paths.get(EV3DevFileSystem.getRootPath(),
                 batteryDir,
                 props.getProperty(propPrefix + ".battery"));

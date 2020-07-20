@@ -3,6 +3,7 @@ package ev3dev.sensors;
 import ev3dev.hardware.EV3DevDevice;
 import ev3dev.hardware.EV3DevFileSystem;
 import ev3dev.hardware.EV3DevPlatform;
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Sysfs;
 import lejos.hardware.Power;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @see <a href="https://www.kernel.org/doc/Documentation/power/power_supply_class.txt">https://www.kernel.org/doc/Documentation/power/power_supply_class.txt</a>
  * @see <a href="https://github.com/ev3dev/ev3dev-lang/blob/develop/wrapper-specification.md#direct-attribute-mappings-5">https://github.com/ev3dev/ev3dev-lang/blob/develop/wrapper-specification.md#direct-attribute-mappings-5</a>
  */
-public class Battery extends EV3DevDevice implements Power {
+public class Battery extends EV3DevDevice implements Power, ConditionalCompilation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Battery.class);
 
@@ -49,7 +50,9 @@ public class Battery extends EV3DevDevice implements Power {
     // Prevent duplicate objects
     private Battery() {
 
-        LOGGER.debug("Init sensor");
+    	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+    		LOGGER.debug("Init sensor");
+    	}
 
         BATTERY = ev3DevProperties.getProperty("battery");
         BATTERY_EV3 = ev3DevProperties.getProperty("ev3.battery");

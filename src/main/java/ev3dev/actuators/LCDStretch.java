@@ -5,6 +5,7 @@ import ev3dev.hardware.EV3DevPlatform;
 import ev3dev.hardware.display.ImageUtils;
 import ev3dev.hardware.display.JavaFramebuffer;
 import ev3dev.hardware.display.SystemDisplay;
+import ev3dev.utils.ConditionalCompilation;
 import lejos.hardware.lcd.GraphicsLCD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import java.util.TimerTask;
 /**
  * Lejos LCD reimplementation using Java2D API
  */
-public class LCDStretch extends EV3DevDevice implements GraphicsLCD {
+public class LCDStretch extends EV3DevDevice implements GraphicsLCD, ConditionalCompilation {
 
     // custom config
     public static final String EV3DEV_LCD_KEY = "EV3DEV_LCD_KEY";
@@ -69,7 +70,9 @@ public class LCDStretch extends EV3DevDevice implements GraphicsLCD {
     // Prevent duplicate objects
     private LCDStretch() {
 
-        log.info("Instancing LCD for Stretch");
+    	if (DC_INFO && log.isInfoEnabled()) {
+    		log.info("Instancing LCD for Stretch");
+    	}
 
         if (!CURRENT_PLATFORM.equals(EV3DevPlatform.EV3BRICK)) {
             log.error("This actuator was only tested for: {}", EV3DevPlatform.EV3BRICK);
@@ -93,7 +96,7 @@ public class LCDStretch extends EV3DevDevice implements GraphicsLCD {
      * Write LCD with current context
      */
     public void flush() {
-        if (log.isTraceEnabled()) {
+        if (DC_TRACE && log.isTraceEnabled()) {
             log.trace("flushing framebuffer");
         }
 
@@ -431,7 +434,9 @@ public class LCDStretch extends EV3DevDevice implements GraphicsLCD {
     @Override
     public void setContrast(int i) {
         // not implemented even on leJOS
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     /**

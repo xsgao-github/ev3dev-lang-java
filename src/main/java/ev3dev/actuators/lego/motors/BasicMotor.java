@@ -3,6 +3,7 @@ package ev3dev.actuators.lego.motors;
 import ev3dev.hardware.EV3DevMotorDevice;
 import ev3dev.hardware.EV3DevPlatform;
 import ev3dev.hardware.EV3DevPlatforms;
+import ev3dev.utils.ConditionalCompilation;
 import lejos.hardware.port.Port;
 import lejos.robotics.DCMotor;
 import lejos.utility.Delay;
@@ -20,7 +21,7 @@ import java.util.Set;
  * @author Lawrie Griffiths.
  * @author Juan Antonio Breña Moral
  */
-public abstract class BasicMotor extends EV3DevMotorDevice implements DCMotor {
+public abstract class BasicMotor extends EV3DevMotorDevice implements DCMotor, ConditionalCompilation {
 
     private static final Logger log = LoggerFactory.getLogger(BasicMotor.class);
 
@@ -44,9 +45,13 @@ public abstract class BasicMotor extends EV3DevMotorDevice implements DCMotor {
         final EV3DevPlatforms ev3DevPlatforms = EV3DevPlatforms.getInstance();
         final String port = ev3DevPlatforms.getMotorPort(motorPort);
 
-        log.debug("Detecting motor on port: {}", port);
+        if (DC_DEBUG && log.isDebugEnabled()) {
+        	log.debug("Detecting motor on port: {}", port);
+        }
         this.detect(LEGO_PORT, port);
-        log.debug("Setting port in mode: {}", DC_MOTOR);
+        if (DC_DEBUG && log.isDebugEnabled()) {
+        	log.debug("Setting port in mode: {}", DC_MOTOR);
+        }
         this.setStringAttribute(MODE, DC_MOTOR);
         Delay.msDelay(500);
         this.detect(DC_MOTOR, port);

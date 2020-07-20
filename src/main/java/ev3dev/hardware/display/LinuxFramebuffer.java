@@ -2,6 +2,8 @@ package ev3dev.hardware.display;
 
 import com.sun.jna.LastErrorException;
 import com.sun.jna.Pointer;
+
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.io.NativeConstants;
 import ev3dev.utils.io.NativeFramebuffer;
 import lombok.NonNull;
@@ -17,7 +19,7 @@ import java.awt.image.BufferedImage;
  * @since 2.4.7
  */
 @Slf4j
-public abstract class LinuxFramebuffer implements JavaFramebuffer {
+public abstract class LinuxFramebuffer implements JavaFramebuffer, ConditionalCompilation {
     /**
      * Underlying fixed framebuffer info.
      */
@@ -76,7 +78,9 @@ public abstract class LinuxFramebuffer implements JavaFramebuffer {
         backup = new byte[(int) getBufferSize()];
         blank = null;
         flushEnabled = true;
-        LOGGER.debug("Opened LinuxFB, mode {}x{}x{}bpp", varinfo.xres, varinfo.yres, varinfo.bits_per_pixel);
+        if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Opened LinuxFB, mode {}x{}x{}bpp", varinfo.xres, varinfo.yres, varinfo.bits_per_pixel);
+        }
     }
 
     protected void initializeMemory() throws LastErrorException {
@@ -85,7 +89,9 @@ public abstract class LinuxFramebuffer implements JavaFramebuffer {
 
     @Override
     public void close() throws LastErrorException {
-        LOGGER.trace("Closing LinuxFB");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Closing LinuxFB");
+    	}
         if (videomem != null) {
             device.munmap(videomem, getBufferSize());
         }
@@ -138,11 +144,15 @@ public abstract class LinuxFramebuffer implements JavaFramebuffer {
     @Override
     public void flushScreen(@NonNull BufferedImage compatible) {
         if (flushEnabled) {
-            LOGGER.trace("Drawing frame on framebuffer");
+        	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+        		LOGGER.trace("Drawing frame on framebuffer");
+        	}
             videomem.write(0, ImageUtils.getImageBytes(compatible), 0, (int) getBufferSize());
             device.msync(videomem, getBufferSize(), NativeConstants.MS_SYNC);
         } else {
-            LOGGER.trace("Not drawing frame on framebuffer");
+        	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+        		LOGGER.trace("Not drawing frame on framebuffer");
+        	}
         }
     }
 
@@ -153,20 +163,26 @@ public abstract class LinuxFramebuffer implements JavaFramebuffer {
 
     @Override
     public void storeData() {
-        LOGGER.trace("Storing framebuffer snapshot");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Storing framebuffer snapshot");
+    	}
         videomem.read(0, backup, 0, (int) getBufferSize());
     }
 
     @Override
     public void restoreData() {
-        LOGGER.trace("Retoring framebuffer snapshot");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Retoring framebuffer snapshot");
+    	}
         videomem.write(0, backup, 0, (int) getBufferSize());
         device.msync(videomem, getBufferSize(), NativeConstants.MS_SYNC);
     }
 
     @Override
     public void clear() {
-        LOGGER.trace("Clearing framebuffer");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Clearing framebuffer");
+    	}
         if (blank == null) {
             blank = createCompatibleBuffer();
             Graphics2D gfx = blank.createGraphics();

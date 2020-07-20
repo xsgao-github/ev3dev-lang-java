@@ -1,6 +1,7 @@
 package ev3dev.sensors;
 
 import ev3dev.hardware.EV3DevPropertyLoader;
+import ev3dev.utils.ConditionalCompilation;
 import lejos.hardware.Key;
 import lejos.hardware.KeyListener;
 import lejos.hardware.Keys;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
  * @author Jaroslav Tupy
  */
 @Slf4j
-public class EV3Key implements Key {
+public class EV3Key implements Key, ConditionalCompilation {
 
     public static final int BUTTON_UP = 0x67;
     public static final int BUTTON_DOWN = 0x6c;
@@ -305,7 +306,7 @@ public class EV3Key implements Key {
     // package-private such that it's VisibleForTesting
     static void processKeyEvent(final byte keyId, final byte keyState) {
         final KeyType keyType = KeyType.of(keyId);
-        if (LOGGER.isTraceEnabled()) {
+        if (DC_TRACE && LOGGER.isTraceEnabled()) {
             LOGGER.trace("KeyType {} {}", keyType.name, (keyState == 0 ? "released" : "pressed"));
         }
 

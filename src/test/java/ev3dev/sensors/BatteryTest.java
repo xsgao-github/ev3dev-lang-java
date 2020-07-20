@@ -2,6 +2,7 @@ package ev3dev.sensors;
 
 import ev3dev.hardware.EV3DevFileSystem;
 import ev3dev.hardware.EV3DevPlatform;
+import ev3dev.utils.ConditionalCompilation;
 import fake_ev3dev.ev3dev.sensors.FakeBattery;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
@@ -16,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Created by jabrena on 19/6/17.
  */
 @Slf4j
-public class BatteryTest {
+public class BatteryTest implements ConditionalCompilation {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -44,7 +45,9 @@ public class BatteryTest {
         final FakeBattery fakeBattery = new FakeBattery(EV3DevPlatform.EV3BRICK);
 
         Battery battery = Battery.getInstance();
-        LOGGER.info("{}", battery.getVoltage());
+        if (DC_INFO && LOGGER.isInfoEnabled()) {
+        	LOGGER.info("{}", battery.getVoltage());
+        }
 
         assertThat(battery.getVoltage(),
                 is(Float.parseFloat(FakeBattery.BATTERY_FIELD_VOLTAGE_VALUE)/1000000f));
@@ -57,7 +60,9 @@ public class BatteryTest {
         final FakeBattery fakeBattery = new FakeBattery(EV3DevPlatform.BRICKPI);
 
         Battery battery = Battery.getInstance();
-        LOGGER.info("{}", battery.getVoltage());
+        if (DC_INFO && LOGGER.isInfoEnabled()) {
+        	LOGGER.info("{}", battery.getVoltage());
+        }
 
         assertThat(battery.getVoltage(),
                 is(Float.parseFloat(FakeBattery.BATTERY_FIELD_VOLTAGE_VALUE)/1000000f));
@@ -70,7 +75,9 @@ public class BatteryTest {
         final FakeBattery fakeBattery = new FakeBattery(EV3DevPlatform.BRICKPI3);
 
         Battery battery = Battery.getInstance();
-        LOGGER.info("{}", battery.getVoltage());
+        if (DC_INFO && LOGGER.isInfoEnabled()) {
+        	LOGGER.info("{}", battery.getVoltage());
+        }
 
         assertThat(battery.getVoltage(),
                 is(Float.parseFloat(FakeBattery.BATTERY_FIELD_VOLTAGE_VALUE)/1000000f));
@@ -83,7 +90,9 @@ public class BatteryTest {
         final FakeBattery fakeBattery = new FakeBattery(EV3DevPlatform.PISTORMS);
 
         Battery battery = Battery.getInstance();
-        LOGGER.info("{}", battery.getVoltage());
+        if (DC_INFO && LOGGER.isInfoEnabled()) {
+        	LOGGER.info("{}", battery.getVoltage());
+        }
 
         assertThat(battery.getVoltage(),
                 is(Float.parseFloat(FakeBattery.BATTERY_FIELD_VOLTAGE_VALUE)/1000000f));

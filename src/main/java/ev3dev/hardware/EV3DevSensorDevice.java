@@ -5,12 +5,14 @@ import lejos.utility.Delay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ev3dev.utils.ConditionalCompilation;
+
 /**
  * Base class to interact with EV3Dev Sensors
  *
  * @author Juan Antonio Breña Moral
  */
-public abstract class EV3DevSensorDevice extends EV3DevDevice {
+public abstract class EV3DevSensorDevice extends EV3DevDevice implements ConditionalCompilation {
 
     private static final Logger log = LoggerFactory.getLogger(EV3DevSensorDevice.class);
 
@@ -41,12 +43,16 @@ public abstract class EV3DevSensorDevice extends EV3DevDevice {
 
             //With Pi Boards, it is necessary to detect in 2 paths the sensors
             this.detect(LEGO_PORT, port);
-            log.info("detected lego port: {}", this.PATH_DEVICE);
+            if (DC_INFO && log.isInfoEnabled()) {
+            	log.info("detected lego port: {}", this.PATH_DEVICE);
+            }
             this.setStringAttribute(MODE, mode);
             this.setStringAttribute(DEVICE, device);
             Delay.msDelay(1000);
             this.detect(LEGO_SENSOR, port);
-            log.info("detected lego sensor: {}", this.PATH_DEVICE);
+            if (DC_INFO && log.isInfoEnabled()) {
+            	log.info("detected lego sensor: {}", this.PATH_DEVICE);
+            }
         }
 
     }
@@ -69,11 +75,15 @@ public abstract class EV3DevSensorDevice extends EV3DevDevice {
 
             //With Pi Boards, it is necessary to detect in 2 paths the sensors
             this.detect(LEGO_PORT, port);
-            log.debug("detected lego port: {}", this.PATH_DEVICE);
+            if (DC_DEBUG && log.isDebugEnabled()) {
+            	log.debug("detected lego port: {}", this.PATH_DEVICE);
+            }
             this.setStringAttribute(MODE, mode);
             Delay.msDelay(1000);
             this.detect(LEGO_SENSOR, port);
-            log.debug("detected lego sensor: {}", this.PATH_DEVICE);
+            if (DC_DEBUG && log.isDebugEnabled()) {
+            	log.debug("detected lego sensor: {}", this.PATH_DEVICE);
+            }
         }
 
     }

@@ -13,7 +13,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class JarResource {
+public class JarResource implements ConditionalCompilation {
     public static final String JAVA_DUKE_IMAGE_NAME = "java_logo.png";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Shell.class);
 
@@ -101,7 +101,9 @@ public class JarResource {
     public static void delete(final String resourceName) {
         try {
             Files.delete(Paths.get(resourceName));
-            log.info("File deleted!");
+            if (DC_INFO && log.isInfoEnabled()) {
+            	log.info("File deleted!");
+            }
         } catch (IOException e) {
             log.warn("Delete operation is failed. {}", e.getLocalizedMessage());
         }

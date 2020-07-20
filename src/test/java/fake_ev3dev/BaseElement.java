@@ -3,6 +3,8 @@ package fake_ev3dev;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
+import ev3dev.utils.ConditionalCompilation;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
-public abstract class BaseElement {
+public abstract class BaseElement implements ConditionalCompilation {
 
     private static final String JAVA_IO_TEMPDIR = System.getProperty("java.io.tmpdir");
     public static final String EV3DEV_FAKE_SYSTEM_PATH = Paths.get(JAVA_IO_TEMPDIR, "ev3dev_fake_system").toString();
@@ -44,7 +46,9 @@ public abstract class BaseElement {
      */
     public static  void resetEV3DevInfrastructure() throws IOException {
 
-        LOGGER.info("Reset EV3Dev testing infrastructure");
+    	if (DC_INFO && LOGGER.isInfoEnabled()) {
+    		LOGGER.info("Reset EV3Dev testing infrastructure");
+    	}
 
         //Delete
         FileUtils.deleteDirectory(new File(EV3DEV_FAKE_SYSTEM_PATH));
@@ -52,12 +56,16 @@ public abstract class BaseElement {
         //Create
         final Path ev3devFakeSystemPath = Paths.get(EV3DEV_FAKE_SYSTEM_PATH);
         Files.createDirectories(ev3devFakeSystemPath);
-        LOGGER.debug("Path created: {}", ev3devFakeSystemPath);
+        if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Path created: {}", ev3devFakeSystemPath);
+        }
     }
 
     protected void createDirectories(final Path path) throws IOException {
         Files.createDirectories(path);
-        System.out.println(Files.exists(path));
+        if (DC_INFO) {
+        	System.out.println(Files.exists(path));
+        }
     }
 
     protected void createDirectoriesDirect(final String first, final String... more) throws IOException {

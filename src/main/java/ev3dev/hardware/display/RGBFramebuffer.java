@@ -1,6 +1,8 @@
 package ev3dev.hardware.display;
 
 import com.sun.jna.LastErrorException;
+
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.io.NativeFramebuffer;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,7 @@ import static ev3dev.utils.io.NativeConstants.FB_VISUAL_TRUECOLOR;
  * @since 2.4.7
  */
 @Slf4j
-public class RGBFramebuffer extends LinuxFramebuffer {
+public class RGBFramebuffer extends LinuxFramebuffer implements ConditionalCompilation {
     /**
      * Create and initialize new Linux RGB framebuffer.
      *
@@ -37,7 +39,9 @@ public class RGBFramebuffer extends LinuxFramebuffer {
             } catch (LastErrorException e) {
                 throw new RuntimeException("Cannot close framebuffer", e);
             }
-            LOGGER.debug("Framebuffer uses non-packed pixels");
+            if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            	LOGGER.debug("Framebuffer uses non-packed pixels");
+            }
             throw new IllegalArgumentException("Only framebuffers with packed pixels are supported");
         }
         if (getFixedInfo().visual != FB_VISUAL_TRUECOLOR || getVariableInfo().bits_per_pixel != 32) {
@@ -46,7 +50,9 @@ public class RGBFramebuffer extends LinuxFramebuffer {
             } catch (LastErrorException e) {
                 throw new RuntimeException("Cannot close framebuffer", e);
             }
-            LOGGER.debug("Framebuffer is not 32bpp truecolor");
+            if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            	LOGGER.debug("Framebuffer is not 32bpp truecolor");
+            }
             throw new IllegalArgumentException("Only framebuffers with 32bpp RGB are supported");
         }
         // taking ownership

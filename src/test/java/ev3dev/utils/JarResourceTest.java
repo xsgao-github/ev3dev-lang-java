@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 @Slf4j
-public class JarResourceTest {
+public class JarResourceTest implements ConditionalCompilation {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -25,7 +25,9 @@ public class JarResourceTest {
         final String JAVA_LOGO = JarResource.JAVA_DUKE_IMAGE_NAME;
 
         final String JAVA_LOGO_EXPORTED_PATH = JarResource.export(JAVA_LOGO);
-        LOGGER.info(JAVA_LOGO_EXPORTED_PATH);
+        if (DC_INFO && LOGGER.isInfoEnabled()) {
+        	LOGGER.info(JAVA_LOGO_EXPORTED_PATH);
+        }
 
         final boolean result = Sysfs.existFile(Paths.get(JAVA_LOGO_EXPORTED_PATH));
         assertThat(result, is(true));
@@ -63,7 +65,9 @@ public class JarResourceTest {
         final String JAVA_LOGO = JarResource.JAVA_DUKE_IMAGE_NAME;
 
         final String JAVA_LOGO_EXPORTED_PATH = JarResource.export(JAVA_LOGO);
-        LOGGER.info(JAVA_LOGO_EXPORTED_PATH);
+        if (DC_INFO && LOGGER.isInfoEnabled()) {
+        	LOGGER.info(JAVA_LOGO_EXPORTED_PATH);
+        }
 
         final boolean result = Sysfs.existFile(Paths.get(JAVA_LOGO_EXPORTED_PATH));
         assertThat(result, is(true));

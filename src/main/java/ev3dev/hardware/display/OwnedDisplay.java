@@ -1,6 +1,8 @@
 package ev3dev.hardware.display;
 
 import com.sun.jna.LastErrorException;
+
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.io.ILibc;
 import ev3dev.utils.io.NativeFramebuffer;
 import ev3dev.utils.io.NativeTTY;
@@ -34,7 +36,7 @@ import static ev3dev.utils.io.NativeConstants.VT_PROCESS;
  * @since 2.4.7
  */
 @Slf4j
-class OwnedDisplay extends DisplayInterface {
+class OwnedDisplay extends DisplayInterface implements ConditionalCompilation {
 
     private ILibc libc;
     private String fbPath = null;
@@ -50,13 +52,17 @@ class OwnedDisplay extends DisplayInterface {
     public OwnedDisplay(@NonNull ILibc libc) {
         this.libc = libc;
         try {
-            LOGGER.trace("Initialing system console");
+        	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+        		LOGGER.trace("Initialing system console");
+        	}
             initialize();
             deinitializer = new Thread(this::deinitialize, "console restore");
             Runtime.getRuntime().addShutdownHook(deinitializer);
             switchToTextMode();
         } catch (IOException e) {
-            LOGGER.debug("System console initialization failed");
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("System console initialization failed");
+        	}
             throw new RuntimeException("Error initializing system console", e);
         }
     }
@@ -73,16 +79,22 @@ class OwnedDisplay extends DisplayInterface {
         NativeFramebuffer fbfd = null;
         boolean success = false;
         try {
-            LOGGER.trace("Opening TTY");
+        	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+        		LOGGER.trace("Opening TTY");
+        	}
             ttyfd = new NativeTTY("/dev/tty", O_RDWR, libc);
             //TODO Review to put final (Checkstyle)
             int activeVT = ttyfd.getVTstate().v_active;
             old_kbmode = ttyfd.getKeyboardMode();
 
-            LOGGER.trace("Opening FB 0");
+            if (DC_TRACE && LOGGER.isTraceEnabled()) {
+            	LOGGER.trace("Opening FB 0");
+            }
             fbfd = new NativeFramebuffer("/dev/fb0", libc);
             int fbn = fbfd.mapConsoleToFramebuffer(activeVT);
-            LOGGER.trace("map vt{} -> fb{}", activeVT, fbn);
+            if (DC_TRACE && LOGGER.isTraceEnabled()) {
+            	LOGGER.trace("map vt{} -> fb{}", activeVT, fbn);
+            }
 
             if (fbn < 0) {
                 LOGGER.error("No framebuffer for current TTY");
@@ -90,7 +102,9 @@ class OwnedDisplay extends DisplayInterface {
             }
             fbPath = "/dev/fb" + fbn;
             if (fbn != 0) {
-                LOGGER.trace("Redirected to FB {}", fbn);
+            	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+            		LOGGER.trace("Redirected to FB {}", fbn);
+            	}
                 fbfd.close();
                 fbfd = new NativeFramebuffer(fbPath, libc);
             }
@@ -124,7 +138,9 @@ class OwnedDisplay extends DisplayInterface {
      * Then, console file descriptor is closed.</p>
      */
     private void deinitialize() {
-        LOGGER.trace("Closing system console");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Closing system console");
+    	}
         try {
             ttyfd.setKeyboardMode(old_kbmode);
             ttyfd.setConsoleMode(KD_TEXT);
@@ -157,7 +173,9 @@ class OwnedDisplay extends DisplayInterface {
      * @throws RuntimeException when the switch fails
      */
     public void switchToGraphicsMode() {
-        LOGGER.trace("Switching console to graphics mode");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Switching console to graphics mode");
+    	}
         try {
             ttyfd.setKeyboardMode(K_OFF);
             ttyfd.setConsoleMode(KD_GRAPHICS);
@@ -186,7 +204,9 @@ class OwnedDisplay extends DisplayInterface {
      * @throws RuntimeException when the switch fails
      */
     public void switchToTextMode() {
-        LOGGER.trace("Switching console to text mode");
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("Switching console to text mode");
+    	}
         if (fbInstance != null) {
             fbInstance.setFlushEnabled(false);
             fbInstance.storeData();
@@ -216,7 +236,9 @@ class OwnedDisplay extends DisplayInterface {
      */
     public synchronized JavaFramebuffer openFramebuffer() {
         if (fbInstance == null) {
-            LOGGER.debug("Initialing framebuffer in system console");
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("Initialing framebuffer in system console");
+        	}
             switchToGraphicsMode();
             initializeFramebuffer(new NativeFramebuffer(fbPath, libc), true);
         }

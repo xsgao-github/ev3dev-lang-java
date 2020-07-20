@@ -1,5 +1,6 @@
 package ev3dev.hardware;
 
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Sysfs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import java.util.Properties;
  *
  *
  */
-public abstract class EV3DevDevice {
+public abstract class EV3DevDevice implements ConditionalCompilation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EV3DevDevice.class);
 
@@ -58,12 +59,12 @@ public abstract class EV3DevDevice {
      */
     protected void detect(final String type, final String portName) {
         final String devicePath = EV3DevFileSystem.getRootPath() + "/" + type;
-        if (LOGGER.isTraceEnabled()) {
+        if (DC_TRACE && LOGGER.isTraceEnabled()) {
             LOGGER.trace("Retrieving devices in path: ", devicePath);
         }
         final List<File> deviceAvailables = Sysfs.getElements(devicePath);
         boolean connected = false;
-        if (LOGGER.isTraceEnabled()) {
+        if (DC_TRACE && LOGGER.isTraceEnabled()) {
             LOGGER.trace("Checking devices on: {}", devicePath);
         }
         String pathDeviceName;
@@ -71,22 +72,22 @@ public abstract class EV3DevDevice {
         for (File deviceAvailable : deviceAvailables) {
             PATH_DEVICE = deviceAvailable;
             pathDeviceName = PATH_DEVICE + "/" + ADDRESS;
-            if (LOGGER.isTraceEnabled()) {
+            if (DC_TRACE && LOGGER.isTraceEnabled()) {
                 LOGGER.trace("Device {}:", deviceCounter);
             }
             String result = Sysfs.readString(pathDeviceName);
-            if (LOGGER.isTraceEnabled()) {
+            if (DC_TRACE && LOGGER.isTraceEnabled()) {
                 LOGGER.trace("Port expected: {}, actual: {}.", portName, result);
             }
             //TODO Review to use equals. It is more strict
             if (result.contains(portName)) {
-                if (LOGGER.isDebugEnabled()) {
+            	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Detected device on path: {}, {}", pathDeviceName, result);
                 }
                 connected = true;
                 break;
             } else {
-                if (LOGGER.isTraceEnabled()) {
+            	if (DC_TRACE && LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Skipped device");
                 }
             }

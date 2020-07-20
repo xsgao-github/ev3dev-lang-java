@@ -2,6 +2,7 @@ package ev3dev.actuators;
 
 import ev3dev.hardware.EV3DevDevice;
 import ev3dev.hardware.EV3DevPlatform;
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Sysfs;
 import lejos.hardware.lcd.GraphicsLCD;
 import org.slf4j.Logger;
@@ -21,8 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-public class LCDJessie extends EV3DevDevice implements GraphicsLCD {
-
+public class LCDJessie extends EV3DevDevice implements GraphicsLCD, ConditionalCompilation {
     private static final Logger log = LoggerFactory.getLogger(LCDJessie.class);
 
     public static final String EV3DEV_EV3_DEVICES_PATH = "/dev";
@@ -64,7 +64,9 @@ public class LCDJessie extends EV3DevDevice implements GraphicsLCD {
     // Prevent duplicate objects
     private LCDJessie() {
 
-        log.info("Instancing LCD for Jessie");
+    	if (DC_INFO && log.isInfoEnabled()) {
+    		log.info("Instancing LCD for Jessie");
+    	}
 
         if (CURRENT_PLATFORM.equals(EV3DevPlatform.EV3BRICK)) {
             init(EV3_SCREEN_WIDTH, EV3_SCREEN_HEIGHT, EV3_LINE_LEN, EV3_BUFFER_SIZE);
@@ -192,75 +194,99 @@ public class LCDJessie extends EV3DevDevice implements GraphicsLCD {
         } else if ((i == 255) && (i1 == 255) && (i2 == 255)) {
             g2d.setColor(Color.WHITE);
         } else {
-            log.debug("EV3 Display only accepts rgb(0,0,0) or rgb(255,255,555)");
+        	if (DC_DEBUG && log.isDebugEnabled()) {
+        		log.debug("EV3 Display only accepts rgb(0,0,0) or rgb(255,255,555)");
+        	}
         }
     }
 
     @Override
     public void setPixel(int i, int i1, int i2) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public int getPixel(int i, int i1) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
         return -1;
     }
 
     @Override
     public void drawString(String s, int i, int i1, int i2, boolean b) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public void drawString(String s, int i, int i1, int i2) {
-        g2d.drawString(s, i, i1);
+   		g2d.drawString(s, i, i1);
     }
 
     @Override
     public void drawSubstring(String s, int i, int i1, int i2, int i3, int i4) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public void drawChar(char c, int i, int i1, int i2) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public void drawChars(char[] chars, int i, int i1, int i2, int i3, int i4) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     //TODO Review LeJOS Javadocs
     @Override
     public int getStrokeStyle() {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
         return -1;
     }
 
     //TODO Review LeJOS Javadocs
     @Override
     public void setStrokeStyle(int i) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Deprecated
     @Override
     public void drawRegionRop(Image image, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Deprecated
     @Override
     public void drawRegionRop(Image image, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Deprecated
     @Override
     public void drawRegion(Image image, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
@@ -280,7 +306,9 @@ public class LCDJessie extends EV3DevDevice implements GraphicsLCD {
 
     @Override
     public void copyArea(int i, int i1, int i2, int i3, int i4, int i5, int i6) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
@@ -329,43 +357,57 @@ public class LCDJessie extends EV3DevDevice implements GraphicsLCD {
 
     @Override
     public byte[] getDisplay() {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
         return null;
     }
 
     @Override
     public byte[] getHWDisplay() {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
         return null;
     }
 
     @Override
     public void setContrast(int i) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public void bitBlt(
         byte[] bytes, int i, int i1, int i2, int i3, int i4, int i5,
         int i6, int i7, int i8) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public void bitBlt(
         byte[] bytes, int i, int i1, int i2, int i3, byte[] bytes1, int i4, int i5,
         int i6, int i7, int i8, int i9, int i10) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public void setAutoRefresh(boolean b) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
     }
 
     @Override
     public int setAutoRefreshPeriod(int i) {
-        log.debug("Feature not implemented");
+    	if (DC_DEBUG && log.isDebugEnabled()) {
+    		log.debug("Feature not implemented");
+    	}
         return -1;
     }
 

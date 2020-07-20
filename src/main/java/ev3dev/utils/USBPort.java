@@ -11,7 +11,7 @@ import static ev3dev.hardware.EV3DevFileSystem.EV3DEV_TESTING_KEY;
  * list the content of the path: /sys/bus/usb/devices
  */
 @Slf4j
-public class USBPort {
+public class USBPort implements ConditionalCompilation {
 
     private String USBPath;
     private final String defaultUSBPath = "/sys/bus/usb/drivers/usb/";
@@ -23,10 +23,14 @@ public class USBPort {
 
         if (Objects.nonNull(System.getProperty(EV3DEV_TESTING_KEY))) {
             final String NEW_ROOT_PATH = System.getProperty(EV3DEV_TESTING_KEY);
-            LOGGER.debug("USB Path modified: {}", NEW_ROOT_PATH);
+            if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            	LOGGER.debug("USB Path modified: {}", NEW_ROOT_PATH);
+            }
             USBPath = NEW_ROOT_PATH + "/usb";
         } else {
-            LOGGER.debug("Root Path: {}", defaultUSBPath);
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug("Root Path: {}", defaultUSBPath);
+        	}
             USBPath = defaultUSBPath;
         }
 

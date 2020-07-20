@@ -15,13 +15,15 @@ import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import ev3dev.utils.ConditionalCompilation;
+
 /**
  * Common image utilities for framebuffer manipulation
  *
  * @since 2.4.7
  */
 @Slf4j
-public class ImageUtils {
+public class ImageUtils implements ConditionalCompilation {
 
     /**
      * Create new ev3dev-compatible XRGB image.
@@ -72,7 +74,9 @@ public class ImageUtils {
     public static BufferedImage createXRGBImage(
         int width, int height, int stride, int[] offsets, @NonNull byte[] buffer) {
 
-        LOGGER.trace("creating XRGB image {}x{} with stride={}", width, height, stride);
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("creating XRGB image {}x{} with stride={}", width, height, stride);
+    	}
         if (buffer.length < (stride * height)) {
             throw new IllegalArgumentException("Buffer is smaller than height*stride");
         }
@@ -161,7 +165,9 @@ public class ImageUtils {
     public static BufferedImage createBWImage(
         int width, int height, int stride, boolean zeroBlack, @NonNull byte[] backed) {
 
-        LOGGER.trace("creating BW image {}x{} with stride={}", width, height, stride);
+    	if (DC_TRACE && LOGGER.isTraceEnabled()) {
+    		LOGGER.trace("creating BW image {}x{} with stride={}", width, height, stride);
+    	}
         if (backed.length < (stride * height)) {
             throw new IllegalArgumentException("Buffer is smaller than height*stride");
         }

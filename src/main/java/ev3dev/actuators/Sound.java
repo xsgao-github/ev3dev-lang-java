@@ -4,6 +4,7 @@ import ev3dev.hardware.EV3DevDevice;
 import ev3dev.hardware.EV3DevDistro;
 import ev3dev.hardware.EV3DevDistros;
 import ev3dev.hardware.EV3DevPlatform;
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Shell;
 import ev3dev.utils.Sysfs;
 import lejos.utility.Delay;
@@ -28,7 +29,7 @@ import java.util.Objects;
  *
  * @author Juan Antonio Breña Moral
  */
-public class Sound extends EV3DevDevice {
+public class Sound extends EV3DevDevice implements ConditionalCompilation {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Sound.class);
 
@@ -55,7 +56,9 @@ public class Sound extends EV3DevDevice {
      */
     public static Sound getInstance() {
 
-        LOGGER.info("Providing a Sound instance");
+    	if (DC_INFO && LOGGER.isInfoEnabled()) {
+    		LOGGER.info("Providing a Sound instance");
+    	}
 
         if (Objects.isNull(instance)) {
             instance = new Sound();
@@ -66,7 +69,9 @@ public class Sound extends EV3DevDevice {
     // Prevent duplicate objects
     private Sound() {
 
-        LOGGER.info("Creating a instance of Sound");
+    	if (DC_INFO && LOGGER.isInfoEnabled()) {
+    		LOGGER.info("Creating a instance of Sound");
+    	}
 
         EV3_SOUND_PATH = Objects.nonNull(System.getProperty(EV3DEV_SOUND_KEY))
             ? System.getProperty(EV3DEV_SOUND_KEY) : EV3_PHYSICAL_SOUND_PATH;
@@ -80,7 +85,9 @@ public class Sound extends EV3DevDevice {
      */
     public void beep() {
         if (CURRENT_PLATFORM.equals(EV3DevPlatform.EV3BRICK)) {
-            LOGGER.debug(CMD_BEEP);
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug(CMD_BEEP);
+        	}
             Shell.execute(CMD_BEEP);
             Delay.msDelay(100);
         } else {
@@ -96,7 +103,9 @@ public class Sound extends EV3DevDevice {
             beep();
             beep();
         } else {
-            LOGGER.debug(DISABLED_FEATURE_MESSAGE);
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug(DISABLED_FEATURE_MESSAGE);
+        	}
         }
     }
 
@@ -112,7 +121,9 @@ public class Sound extends EV3DevDevice {
             this.setVolume(volume);
             this.playTone(frequency, duration);
         } else {
-            LOGGER.debug(DISABLED_FEATURE_MESSAGE);
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug(DISABLED_FEATURE_MESSAGE);
+        	}
         }
     }
 
@@ -127,7 +138,9 @@ public class Sound extends EV3DevDevice {
             final String cmdTone = CMD_BEEP + " -f " + frequency + " -l " + duration;
             Shell.execute(cmdTone);
         } else {
-            LOGGER.debug(DISABLED_FEATURE_MESSAGE);
+        	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        		LOGGER.debug(DISABLED_FEATURE_MESSAGE);
+        	}
         }
     }
 

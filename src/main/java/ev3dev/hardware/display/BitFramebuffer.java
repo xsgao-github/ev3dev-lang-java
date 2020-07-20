@@ -1,6 +1,8 @@
 package ev3dev.hardware.display;
 
 import com.sun.jna.LastErrorException;
+
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.io.NativeFramebuffer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +18,7 @@ import static ev3dev.utils.io.NativeConstants.FB_VISUAL_MONO10;
  * @since 2.4.7
  */
 @Slf4j
-public class BitFramebuffer extends LinuxFramebuffer {
+public class BitFramebuffer extends LinuxFramebuffer implements ConditionalCompilation {
 
     /**
      * Create and initialize new Linux 1bpp framebuffer.
@@ -35,7 +37,9 @@ public class BitFramebuffer extends LinuxFramebuffer {
             } catch (LastErrorException e) {
                 throw new RuntimeException("Cannot close framebuffer", e);
             }
-            LOGGER.debug("Framebuffer uses non-packed pixels");
+            if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            	LOGGER.debug("Framebuffer uses non-packed pixels");
+            }
             throw new IllegalArgumentException("Only framebuffers with packed pixels are supported");
         }
         // probably duplicated, but this way we are sure
@@ -47,7 +51,9 @@ public class BitFramebuffer extends LinuxFramebuffer {
             } catch (LastErrorException e) {
                 throw new RuntimeException("Cannot close framebuffer", e);
             }
-            LOGGER.debug("Framebuffer is not 1bpp mono");
+            if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            	LOGGER.debug("Framebuffer is not 1bpp mono");
+            }
             throw new IllegalArgumentException("Only framebuffers with 1bpp BW are supported");
         }
         // taking ownership

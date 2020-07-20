@@ -3,6 +3,7 @@ package ev3dev.hardware.display.spi;
 import com.sun.jna.LastErrorException;
 import ev3dev.hardware.display.DisplayInterface;
 import ev3dev.hardware.display.JavaFramebuffer;
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.io.NativeFramebuffer;
 import lombok.NonNull;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import java.util.ServiceLoader;
  * @author Jakub Vaněk
  * @since 2.4.7
  */
-public interface FramebufferProvider {
+public interface FramebufferProvider extends ConditionalCompilation {
 
     /**
      * Initialize system framebuffer
@@ -32,15 +33,21 @@ public interface FramebufferProvider {
 
         final Logger LOGGER = LoggerFactory.getLogger(FramebufferProvider.class);
 
-        LOGGER.debug("Loading framebuffer");
+        if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+        	LOGGER.debug("Loading framebuffer");
+        }
         ServiceLoader<FramebufferProvider> loader = ServiceLoader.load(FramebufferProvider.class);
         for (FramebufferProvider provider : loader) {
             try {
                 JavaFramebuffer ok = provider.createFramebuffer(fb, disp);
-                LOGGER.debug("Framebuffer '{}' is compatible", provider.getClass().getSimpleName());
+                if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+                	LOGGER.debug("Framebuffer '{}' is compatible", provider.getClass().getSimpleName());
+                }
                 return ok;
             } catch (IllegalArgumentException ex) {
-                LOGGER.debug("Framebuffer '{}' is not compatible", provider.getClass().getSimpleName());
+            	if (DC_DEBUG && LOGGER.isDebugEnabled()) {
+            		LOGGER.debug("Framebuffer '{}' is not compatible", provider.getClass().getSimpleName());
+            	}
             } catch (LastErrorException e) {
                 LOGGER.warn("Framebuffer '{}' threw IOException", provider.getClass().getSimpleName());
                 LOGGER.warn("Message: {}", e.getLocalizedMessage());

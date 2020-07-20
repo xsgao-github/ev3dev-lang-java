@@ -1,5 +1,6 @@
 package ev3dev.robotics.tts;
 
+import ev3dev.utils.ConditionalCompilation;
 import ev3dev.utils.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Espeak wrapper
  */
-public class Espeak {
+public class Espeak implements ConditionalCompilation {
 
     private static final Logger log = LoggerFactory.getLogger(Espeak.class);
 
@@ -105,7 +106,9 @@ public class Espeak {
         final String program = "/bin/sh";
         final String flag = "-c";
         final String[] cmd = {program, flag, this.command};
-        log.debug("Command: {} {} {}", program, flag, this.command);
+        if (DC_DEBUG && log.isDebugEnabled()) {
+        	log.debug("Command: {} {} {}", program, flag, this.command);
+        }
         Shell.execute(cmd);
     }
 
