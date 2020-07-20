@@ -16,7 +16,12 @@ import java.util.Properties;
  */
 public class PilotProps extends Properties {
 
-    public static final String PERSISTENT_FILENAME = "pilot.props";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static final String PERSISTENT_FILENAME = "pilot.props";
 
     public static final String KEY_WHEELDIAMETER = "wheelDiameter";
     public static final String KEY_TRACKWIDTH = "trackWidth";

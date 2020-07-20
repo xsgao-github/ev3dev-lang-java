@@ -1,16 +1,14 @@
 package ev3dev.sensors;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 import ev3dev.hardware.EV3DevSensorDevice;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.SensorMode;
 import lejos.hardware.sensor.SensorModes;
 import lejos.utility.Delay;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
-@Slf4j
 public class BaseSensor extends EV3DevSensorDevice implements SensorModes {
 
     public static final int SWITCH_DELAY = 400;

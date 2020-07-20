@@ -23,7 +23,8 @@ import lejos.robotics.Touch;
  */
 public class EV3TouchSensor extends BaseSensor implements Touch {
 
-    private static final String LEGO_EV3_TOUCH = "lego-ev3-touch";
+    @SuppressWarnings("unused")
+	private static final String LEGO_EV3_TOUCH = "lego-ev3-touch";
 
     public EV3TouchSensor(final Port portName) {
         super(portName, LEGO_ANALOG_SENSOR);

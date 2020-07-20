@@ -2,9 +2,7 @@ package ev3dev.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.RandomAccessFile;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +24,15 @@ public class Sysfs implements ConditionalCompilation {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Sysfs.class);
     
-    private static final Map<String, RandomAccessFile> rafMap = new HashMap<>();
+    /**
+     * Cached RandomAccessFile's that write to sysfs.
+     */
+    private static final Map<String, RandomAccessFile> writers = new HashMap<>();
+    
+    /**
+     * Cached RandomAccessFile's that read from sysfs.
+     */
+    private static final Map<String, RandomAccessFile> readers = new HashMap<>();
     
     /**
      * Write a value in a file.
@@ -40,18 +46,13 @@ public class Sysfs implements ConditionalCompilation {
             log.trace("echo " + value + " > " + filePath);
         }
         try {
-            final File file = new File(filePath);
-            if (file.canWrite()) {
-                //TODO Review if it possible to improve
-                PrintWriter out = new PrintWriter(file);
-                out.println(value);
-                out.flush();
-                out.close();
-                //TODO Review
-            } else {
-                log.error("File: '{}' without write permissions.", filePath);
-                return false;
-            }
+        	RandomAccessFile raf = writers.get(filePath);
+        	if (raf == null) {
+        		raf = new RandomAccessFile(filePath, "rws");
+        		writers.put(filePath, raf);
+        	}
+        	raf.seek(0);
+			raf.write(value.getBytes());
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
             return false;
@@ -60,7 +61,7 @@ public class Sysfs implements ConditionalCompilation {
     }
 
     public static boolean writeInteger(final String filePath, final int value) {
-        return writeString(filePath, new StringBuilder().append(value).toString());
+        return writeString(filePath, String.valueOf(value));
     }
 
     /**
@@ -74,15 +75,14 @@ public class Sysfs implements ConditionalCompilation {
             log.trace("cat " + filePath);
         }
         try {
-            final Path path = Paths.get(filePath);
-            if (existFile(path) && Files.isReadable(path)) {
-                final String result = Files.readAllLines(path, Charset.forName("UTF-8")).get(0);
-                if (DC_TRACE && log.isTraceEnabled()) {
-                    log.trace("value: {}", result);
-                }
-                return result;
-            }
-            throw new IOException("Problem reading path: " + filePath);
+        	RandomAccessFile raf = readers.get(filePath);
+        	if (raf == null) {
+        		raf = new RandomAccessFile(filePath, "r");
+        		writers.put(filePath, raf);
+        	}
+        	raf.seek(0);
+        	byte[] b = new byte[64];
+        	return new String(b, 0, raf.read(b));
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
             throw new RuntimeException("Problem reading path: " + filePath, e);

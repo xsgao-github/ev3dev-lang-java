@@ -443,7 +443,6 @@ public class LCDStretch extends EV3DevDevice implements GraphicsLCD, Conditional
      * Convert from leJOS image format to Java image
      */
     private BufferedImage lejos2rgb(byte[] src, int width, int height) {
-        @SuppressWarnings("SuspiciousNameCombination")
         BufferedImage in = ImageUtils.createBWImage(height, width, true, src);
         BufferedImage out = ImageUtils.createXRGBImage(width, height);
         return java_lejos_flip(in, out);

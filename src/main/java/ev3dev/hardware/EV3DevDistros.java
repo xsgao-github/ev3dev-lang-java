@@ -14,9 +14,12 @@ public class EV3DevDistros implements ConditionalCompilation {
     private static EV3DevDistros instance;
 
     private static final String DEBIAN_DISTRO_DETECTION_QUERY = "cat /etc/os-release";
-    private static final String JESSIE_DISTRO_DETECTION_PATTERN = "ev3dev-jessie";
-    private static final String STRETCH_DISTRO_DETECTION_PATTERN = "ev3dev-stretch";
-    private static final String DEBIAN_DISTRO_DETECTION_KEY = "EV3DEV_DISTRO";
+    @SuppressWarnings("unused")
+	private static final String JESSIE_DISTRO_DETECTION_PATTERN = "ev3dev-jessie";
+    @SuppressWarnings("unused")
+	private static final String STRETCH_DISTRO_DETECTION_PATTERN = "ev3dev-stretch";
+    @SuppressWarnings("unused")
+	private static final String DEBIAN_DISTRO_DETECTION_KEY = "EV3DEV_DISTRO";
     private static final String DEBIAN_DISTRO_DETECTION_JESSIE = "jessie";
     private static final String DEBIAN_DISTRO_DETECTION_STRETCH = "stretch";
 

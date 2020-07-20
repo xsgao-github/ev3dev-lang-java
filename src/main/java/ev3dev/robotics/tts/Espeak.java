@@ -69,12 +69,12 @@ public class Espeak implements ConditionalCompilation {
         if (this.speedReading != -1) {
             sb.append(" -s ").append(this.speedReading);
         } else {
-            sb.append(" -s ").append(this.DEFAULT_SPEED_READING);
+            sb.append(" -s ").append(Espeak.DEFAULT_SPEED_READING);
         }
         if (this.pitch != -1) {
             sb.append(" -p ").append(this.pitch);
         } else {
-            sb.append(" -p ").append(this.DEFAULT_PITCH);
+            sb.append(" -p ").append(Espeak.DEFAULT_PITCH);
         }
         //TODO Refactor
         if (message != null) {

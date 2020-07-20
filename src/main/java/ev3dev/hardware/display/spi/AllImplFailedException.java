@@ -9,6 +9,11 @@ package ev3dev.hardware.display.spi;
  */
 public class AllImplFailedException extends RuntimeException {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Initialize new exception.
      */
     public AllImplFailedException() {
